@@ -1,0 +1,178 @@
+# This is your Prisma schema file,
+# learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication and user management
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      UserRole @default(CLIENT)
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  clientProfile ClientProfile?
+  quotes        Quote[]
+  reservations  Reservation[]
+
+  @@map("users")
+}
+
+// User roles enum
+enum UserRole {
+  ADMIN
+  AGENT
+  CLIENT
+}
+
+// Client profile for additional client information
+model ClientProfile {
+  id      String  @id @default(cuid())
+  userId  String  @unique
+  address String?
+  city    String?
+  state   String?
+  zipCode String?
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("client_profiles")
+}
+
+// Projects model for real estate developments
+model Project {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  address     String
+  city        String
+  state       String
+  zipCode     String?
+  status      ProjectStatus @default(PLANNING)
+  startDate   DateTime?
+  endDate     DateTime?
+  totalUnits  Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relationships
+  units Units[]
+  quotes Quote[]
+
+  @@map("projects")
+}
+
+// Project status enum
+enum ProjectStatus {
+  PLANNING
+  CONSTRUCTION
+  COMPLETED
+  SOLD_OUT
+}
+
+// Units model for individual properties/units
+model Units {
+  id          String     @id @default(cuid())
+  projectId   String
+  unitNumber  String
+  floor       Int?
+  bedrooms    Int
+  bathrooms   Float
+  area        Float      // in square meters
+  price       Float
+  status      UnitStatus @default(AVAILABLE)
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relationships
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  quotes       Quote[]
+  reservations Reservation[]
+
+  @@unique([projectId, unitNumber])
+  @@map("units")
+}
+
+// Unit status enum
+enum UnitStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  UNAVAILABLE
+}
+
+// Quotes model for price quotations
+model Quote {
+  id          String      @id @default(cuid())
+  userId      String
+  projectId   String
+  unitId      String?
+  quoteNumber String      @unique
+  basePrice   Float
+  discount    Float       @default(0)
+  finalPrice  Float
+  status      QuoteStatus @default(PENDING)
+  validUntil  DateTime
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relationships
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  unit         Units?        @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  reservations Reservation[]
+
+  @@map("quotes")
+}
+
+// Quote status enum
+enum QuoteStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+// Reservations model for unit reservations
+model Reservation {
+  id              String            @id @default(cuid())
+  userId          String
+  unitId          String
+  quoteId         String?
+  reservationDate DateTime          @default(now())
+  expiryDate      DateTime
+  depositAmount   Float
+  status          ReservationStatus @default(PENDING)
+  notes           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relationships
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unit  Units  @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  quote Quote? @relation(fields: [quoteId], references: [id], onDelete: SetNull)
+
+  @@map("reservations")
+}
+
+// Reservation status enum
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
