@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       limit 
     } = projectSearchSchema.parse(parsedQuery);
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     
     if (search) {
       where.OR = [
@@ -47,9 +47,9 @@ export async function GET(request: NextRequest) {
     }
     
     if (minPrice || maxPrice) {
-      where.startingPrice = {};
-      if (minPrice) where.startingPrice.gte = minPrice;
-      if (maxPrice) where.startingPrice.lte = maxPrice;
+      where.startingPrice = {} as Record<string, unknown>;
+      if (minPrice) (where.startingPrice as Record<string, unknown>).gte = minPrice;
+      if (maxPrice) (where.startingPrice as Record<string, unknown>).lte = maxPrice;
     }
 
     const [projects, total] = await Promise.all([
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await requireAuth();
+    await requireAuth();
     const body = await request.json();
     
     const validatedData = projectSchema.parse(body);

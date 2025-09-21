@@ -1,6 +1,7 @@
 import { getSession } from './auth';
 import { redirect } from 'next/navigation';
-import { UserRole } from '@prisma/client';
+
+type UserRole = 'USER' | 'ADMIN' | 'AGENT';
 
 export async function requireAuth() {
   const session = await getSession();

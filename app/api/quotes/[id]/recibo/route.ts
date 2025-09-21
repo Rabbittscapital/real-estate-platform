@@ -5,14 +5,15 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await requireAuth();
+    const { id } = await params;
     
     const quote = await prisma.quote.findUnique({
       where: { 
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       include: {

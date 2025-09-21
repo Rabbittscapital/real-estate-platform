@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth-helpers';
 import { quoteSchema } from '@/lib/validators';
 import { generateQuoteNumber } from '@/lib/utils';
-import { QuoteStatus } from '@prisma/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         quoteNumber: generateQuoteNumber(),
         finalPrice,
-        status: QuoteStatus.DRAFT,
+        status: 'DRAFT' as const,
       },
       include: {
         client: true,

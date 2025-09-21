@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       limit 
     } = unitSearchSchema.parse(parsedQuery);
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     
     if (projectId) {
       where.projectId = projectId;
@@ -52,21 +52,21 @@ export async function GET(request: NextRequest) {
     }
     
     if (minBedrooms !== undefined || maxBedrooms !== undefined) {
-      where.bedrooms = {};
-      if (minBedrooms !== undefined) where.bedrooms.gte = minBedrooms;
-      if (maxBedrooms !== undefined) where.bedrooms.lte = maxBedrooms;
+      where.bedrooms = {} as Record<string, unknown>;
+      if (minBedrooms !== undefined) (where.bedrooms as Record<string, unknown>).gte = minBedrooms;
+      if (maxBedrooms !== undefined) (where.bedrooms as Record<string, unknown>).lte = maxBedrooms;
     }
     
     if (minPrice || maxPrice) {
-      where.price = {};
-      if (minPrice) where.price.gte = minPrice;
-      if (maxPrice) where.price.lte = maxPrice;
+      where.price = {} as Record<string, unknown>;
+      if (minPrice) (where.price as Record<string, unknown>).gte = minPrice;
+      if (maxPrice) (where.price as Record<string, unknown>).lte = maxPrice;
     }
     
     if (minArea || maxArea) {
-      where.area = {};
-      if (minArea) where.area.gte = minArea;
-      if (maxArea) where.area.lte = maxArea;
+      where.area = {} as Record<string, unknown>;
+      if (minArea) (where.area as Record<string, unknown>).gte = minArea;
+      if (maxArea) (where.area as Record<string, unknown>).lte = maxArea;
     }
 
     const [units, total] = await Promise.all([

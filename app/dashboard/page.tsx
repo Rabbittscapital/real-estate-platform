@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { AuthGuard } from '@/app/components/AuthGuard';
 import { AppLayout } from '@/app/components/AppLayout';
 import { Card, CardContent, CardHeader } from '@/app/components/Card';
@@ -177,7 +178,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a
+                <Link
                   href="/proyectos"
                   className="flex items-center p-4 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
                 >
@@ -186,9 +187,9 @@ export default function DashboardPage() {
                     <p className="font-medium text-primary-900">Ver Proyectos</p>
                     <p className="text-sm text-primary-600">Gestionar proyectos</p>
                   </div>
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/clientes"
                   className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                 >
@@ -197,9 +198,9 @@ export default function DashboardPage() {
                     <p className="font-medium text-green-900">Ver Clientes</p>
                     <p className="text-sm text-green-600">Gestionar clientes</p>
                   </div>
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/cotizaciones"
                   className="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
                 >
@@ -208,9 +209,9 @@ export default function DashboardPage() {
                     <p className="font-medium text-yellow-900">Cotizaciones</p>
                     <p className="text-sm text-yellow-600">Crear cotización</p>
                   </div>
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/reservas"
                   className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
                 >
@@ -219,7 +220,7 @@ export default function DashboardPage() {
                     <p className="font-medium text-purple-900">Reservas</p>
                     <p className="text-sm text-purple-600">Ver reservas</p>
                   </div>
-                </a>
+                </Link>
               </div>
             </CardContent>
           </Card>

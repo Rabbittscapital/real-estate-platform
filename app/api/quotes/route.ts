@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    const where: any = {
+    const where: Record<string, unknown> = {
       userId: session.user.id,
     };
     

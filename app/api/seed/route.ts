@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { UserRole, ProjectStatus, UnitType, UnitStatus } from '@prisma/client';
 
 export async function POST() {
   try {
@@ -24,7 +23,7 @@ export async function POST() {
         name: 'Admin User',
         email: 'admin@realestate.com',
         password: adminPassword,
-        role: UserRole.ADMIN,
+        role: 'ADMIN' as const,
       },
     });
 
@@ -35,7 +34,7 @@ export async function POST() {
         name: 'Real Estate Agent',
         email: 'agent@realestate.com',
         password: agentPassword,
-        role: UserRole.AGENT,
+        role: 'AGENT' as const,
       },
     });
 
@@ -51,7 +50,7 @@ export async function POST() {
         startingPrice: 2500000,
         endingPrice: 4500000,
         deliveryDate: new Date('2025-06-30'),
-        status: ProjectStatus.UNDER_CONSTRUCTION,
+        status: "UNDER_CONSTRUCTION" as const,
         images: [
           'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
           'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800'
@@ -77,7 +76,7 @@ export async function POST() {
         startingPrice: 3200000,
         endingPrice: 5800000,
         deliveryDate: new Date('2024-12-15'),
-        status: ProjectStatus.UNDER_CONSTRUCTION,
+        status: "UNDER_CONSTRUCTION" as const,
         images: [
           'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
           'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=800'
@@ -100,7 +99,7 @@ export async function POST() {
       unitsProject1.push({
         projectId: project1.id,
         unitNumber,
-        type: i <= 16 ? UnitType.APARTMENT : UnitType.PENTHOUSE,
+        type: i <= 16 ? "APARTMENT" as const : "PENTHOUSE" as const,
         bedrooms: i <= 8 ? 2 : i <= 16 ? 3 : 4,
         bathrooms: i <= 8 ? 1.5 : i <= 16 ? 2 : 3.5,
         area: i <= 8 ? 65.5 : i <= 16 ? 85.0 : 120.0,
@@ -110,7 +109,7 @@ export async function POST() {
         balcony: true,
         parking: true,
         storage: i > 8,
-        status: i <= 5 ? UnitStatus.SOLD : i <= 15 ? UnitStatus.AVAILABLE : UnitStatus.RESERVED,
+        status: i <= 5 ? "SOLD" as const : i <= 15 ? "AVAILABLE" as const : "RESERVED" as const,
         features: i <= 8 ? ['Cocina equipada', 'Closets'] : 
                   i <= 16 ? ['Cocina equipada', 'Closets', 'Terraza'] :
                   ['Cocina equipada', 'Closets', 'Terraza', 'Jacuzzi', 'Walk-in closet'],
@@ -129,7 +128,7 @@ export async function POST() {
       unitsProject2.push({
         projectId: project2.id,
         unitNumber,
-        type: i <= 12 ? UnitType.APARTMENT : UnitType.PENTHOUSE,
+        type: i <= 12 ? "APARTMENT" as const : "PENTHOUSE" as const,
         bedrooms: i <= 6 ? 2 : i <= 12 ? 3 : 4,
         bathrooms: i <= 6 ? 2 : i <= 12 ? 2.5 : 3,
         area: i <= 6 ? 75.0 : i <= 12 ? 95.0 : 140.0,
@@ -139,7 +138,7 @@ export async function POST() {
         balcony: true,
         parking: true,
         storage: true,
-        status: i <= 3 ? UnitStatus.SOLD : i <= 12 ? UnitStatus.AVAILABLE : UnitStatus.RESERVED,
+        status: i <= 3 ? "SOLD" as const : i <= 12 ? "AVAILABLE" as const : "RESERVED" as const,
         features: i <= 6 ? ['Cocina equipada', 'Closets', 'Bodega'] : 
                   i <= 12 ? ['Cocina equipada', 'Closets', 'Bodega', 'Terraza'] :
                   ['Cocina equipada', 'Closets', 'Bodega', 'Terraza', 'Jacuzzi', 'Vista panorámica'],

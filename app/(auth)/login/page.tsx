@@ -40,9 +40,12 @@ export default function LoginPage() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            fieldErrors[err.path[0]] = err.message;
+        error.issues.forEach((err) => {
+          if (err.path && err.path.length > 0) {
+            const fieldName = err.path[0];
+            if (typeof fieldName === 'string') {
+              fieldErrors[fieldName] = err.message;
+            }
           }
         });
         setErrors(fieldErrors);

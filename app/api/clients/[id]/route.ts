@@ -5,14 +5,15 @@ import { clientSchema } from '@/lib/validators';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await requireAuth();
+    const { id } = await params;
     
     const client = await prisma.client.findUnique({
       where: { 
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       include: {
@@ -63,17 +64,18 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await requireAuth();
+    const { id } = await params;
     const body = await request.json();
     
     const validatedData = clientSchema.partial().parse(body);
     
     const client = await prisma.client.update({
       where: { 
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       data: validatedData,
@@ -114,14 +116,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await requireAuth();
+    const { id } = await params;
     
     await prisma.client.delete({
       where: { 
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     });

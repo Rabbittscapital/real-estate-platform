@@ -1,12 +1,11 @@
 import { z } from 'zod';
-import { UserRole, UnitType, UnitStatus, ProjectStatus, QuoteStatus, PaymentPlan, ReservationStatus } from '@prisma/client';
 
 // User validation schemas
 export const userSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.nativeEnum(UserRole).default(UserRole.USER),
+  role: z.enum(['USER', 'ADMIN', 'AGENT']).default('USER' as const),
 });
 
 export const loginSchema = z.object({
@@ -25,7 +24,7 @@ export const projectSchema = z.object({
   startingPrice: z.number().positive('Starting price must be positive'),
   endingPrice: z.number().positive().optional(),
   deliveryDate: z.date().optional(),
-  status: z.nativeEnum(ProjectStatus).default(ProjectStatus.PLANNING),
+  status: z.enum(['PLANNING', 'UNDER_CONSTRUCTION', 'COMPLETED', 'SOLD_OUT']).default('PLANNING' as const),
   images: z.array(z.string().url()).default([]),
   amenities: z.array(z.string()).default([]),
 });
@@ -34,7 +33,7 @@ export const projectSchema = z.object({
 export const unitSchema = z.object({
   projectId: z.string().cuid('Invalid project ID'),
   unitNumber: z.string().min(1, 'Unit number is required'),
-  type: z.nativeEnum(UnitType),
+  type: z.enum(['APARTMENT', 'PENTHOUSE', 'STUDIO', 'LOFT', 'COMMERCIAL']),
   bedrooms: z.number().int().min(0, 'Bedrooms must be non-negative'),
   bathrooms: z.number().min(0, 'Bathrooms must be non-negative'),
   area: z.number().positive('Area must be positive'),
@@ -44,7 +43,7 @@ export const unitSchema = z.object({
   balcony: z.boolean().default(false),
   parking: z.boolean().default(false),
   storage: z.boolean().default(false),
-  status: z.nativeEnum(UnitStatus).default(UnitStatus.AVAILABLE),
+  status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD', 'UNAVAILABLE']).default('AVAILABLE' as const),
   features: z.array(z.string()).default([]),
 });
 
@@ -76,7 +75,7 @@ export const quoteSchema = z.object({
   basePrice: z.number().positive('Base price must be positive'),
   discountAmount: z.number().min(0, 'Discount amount must be non-negative').default(0),
   discountPercent: z.number().min(0).max(100, 'Discount percent must be between 0 and 100').default(0),
-  paymentPlan: z.nativeEnum(PaymentPlan),
+  paymentPlan: z.enum(['CASH', 'FINANCED', 'CUSTOM']),
   downPayment: z.number().positive('Down payment must be positive'),
   monthlyPayment: z.number().positive().optional(),
   validUntil: z.date(),
@@ -103,7 +102,7 @@ export const fileUploadSchema = z.object({
 export const projectSearchSchema = z.object({
   search: z.string().optional(),
   location: z.string().optional(),
-  status: z.nativeEnum(ProjectStatus).optional(),
+  status: z.enum(["PLANNING", "UNDER_CONSTRUCTION", "COMPLETED", "SOLD_OUT"]).optional(),
   minPrice: z.number().positive().optional(),
   maxPrice: z.number().positive().optional(),
   page: z.number().int().positive().default(1),
@@ -112,8 +111,8 @@ export const projectSearchSchema = z.object({
 
 export const unitSearchSchema = z.object({
   projectId: z.string().cuid().optional(),
-  type: z.nativeEnum(UnitType).optional(),
-  status: z.nativeEnum(UnitStatus).optional(),
+  type: z.enum(["APARTMENT", "PENTHOUSE", "STUDIO", "LOFT", "COMMERCIAL"]).optional(),
+  status: z.enum(["AVAILABLE", "RESERVED", "SOLD", "UNAVAILABLE"]).optional(),
   minBedrooms: z.number().int().min(0).optional(),
   maxBedrooms: z.number().int().min(0).optional(),
   minPrice: z.number().positive().optional(),
